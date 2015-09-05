@@ -1,11 +1,11 @@
 {
-  "name": "HTML5Blank",
+  "name": "PUREHTML5BLANK",
   "description": "Powerful shell for rapidly deploying your WordPress projects",
   "license": "MIT",
   "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": "https://github.com/toddmotto/html5blank.git"
+    "url": "https://github.com/romidane/wordpress-html5-blank-pure"
   },
   "author": "Steven Bapaga",
   "devDependencies": {
@@ -21,7 +21,6 @@
     "gulp-imagemin": "^2.0.0",
     "gulp-jshint": "^1.6.3",
     "gulp-load-plugins": "^0.8.0",
-    "gulp-minify-html": "0.1.5",
     "gulp-replace": "^0.5.0",
     "gulp-sass": "^1.2.0",
     "gulp-size": "^1.0.0",
