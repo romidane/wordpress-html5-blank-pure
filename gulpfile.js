@@ -22,19 +22,19 @@ var uglifySrc = [
 ];
 
 var cssminSrc = [
-  'src/assets/styles/*.scss',
-  "src/assets/bower_components/pure/pure-min.css",
+  'src/assets/bower_components/normalize.css/normalize.css',
+  "src/assets/bower_components/pure/pure.css",
+  'src/assets/styles/main.scss',
   'src/assets/styles/**/*.css',
-  'src/assets/styles/components/components.scss'
 ];
 
 
 var AUTOPREFIXER_BROWSERS = [
-  'ie >= 10',
+  'ie >= 8',
   'ie_mob >= 10',
   'ff >= 30',
   'chrome >= 34',
-  'safari >= 7',
+  'safari >= 5',
   'opera >= 23',
   'ios >= 7',
   'android >= 4.4',
@@ -73,11 +73,11 @@ gulp.task('images', function () {
 // Copy all files at the root level (app)
 gulp.task('copy', function () {
   return gulp.src([
-    'src/*',
-    'src/*.php',
+    'src/**',
+    '!src/assets/**',
     '!src/**/*.DS_Store',
-    '!src/**/*.git',
-    '!scr/assets/bower_components'], {
+    '!src/**/*.git'
+    ], {
     dot: true
   }).pipe(gulp.dest('dist'))
     .pipe($.size({title: 'copy'}));
@@ -101,9 +101,11 @@ gulp.task('styles', function () {
       onError: console.error.bind(console, 'Sass error:')
     }))
     .pipe($.autoprefixer({browsers: AUTOPREFIXER_BROWSERS}))
+    .pipe($.csscomb())
     .pipe($.sourcemaps.write())
     .pipe(gulp.dest('.tmp/assets/styles'))
-    // Concatenate and minify styles
+    .pipe( $.concat( "main.min.css" ) )
+    // Minify styles
     .pipe($.if('*.css', $.csso()))
     .pipe(gulp.dest('dist/assets/styles'))
     .pipe($.size({title: 'styles'}));
