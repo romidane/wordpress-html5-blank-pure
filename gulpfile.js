@@ -10,6 +10,23 @@ var browserSync = require('browser-sync');
 var pagespeed = require('psi');
 var reload = browserSync.reload;
 
+var uglifySrc = [
+		/** Modernizr */
+		"src/bower_components/modernizr/modernizr.js",
+		/** Conditionizr */
+		"src/bower_components/conditionizr/src/conditionizr.js",
+		/** jQuery */
+		"src/bower_components/jquery/dist/jquery.js",
+		/** Page scripts */
+		"src/scripts/js/**/*.js"
+];
+
+var cssminSrc = [
+  "src/bower_components/pure/pure-min.css",
+];
+
+
+
 var AUTOPREFIXER_BROWSERS = [
   'ie >= 10',
   'ie_mob >= 10',
@@ -24,11 +41,20 @@ var AUTOPREFIXER_BROWSERS = [
 
 // Lint JavaScript
 gulp.task('jshint', function () {
-  return gulp.src('src/scripts/**/*.js')
+  return gulp.src(['src/scripts/**/*.js','src/scripts/{!(lib)/*.js,*.js}'])
     .pipe(reload({stream: true, once: true}))
     .pipe($.jshint())
     .pipe($.jshint.reporter('jshint-stylish'))
     .pipe($.if(!browserSync.active, $.jshint.reporter('fail')));
+});
+
+
+/** Uglify */
+gulp.task( "uglify", function() {
+	return gulp.src( uglifySrc )
+		.pipe( $.concat( "scripts.min.js" ) )
+		.pipe( $.uglify() )
+		.pipe( gulp.dest( "dist/scripts" ) );
 });
 
 // Optimize images
@@ -46,7 +72,8 @@ gulp.task('images', function () {
 gulp.task('copy', function () {
   return gulp.src([
     'src/*',
-    '!src/*.php'  ], {
+    'src/*.php',
+    '!scr/bower_components'], {
     dot: true
   }).pipe(gulp.dest('dist'))
     .pipe($.size({title: 'copy'}));
@@ -119,7 +146,7 @@ gulp.task('serve:dist', ['default'], function () {
 
 // Build production files, the default task
 gulp.task('default', ['clean'], function (cb) {
-  runSequence('styles', ['jshint', 'styles', 'images', 'fonts', 'copy'], cb);
+  runSequence('styles', ['jshint', 'uglify', 'styles', 'images', 'fonts', 'copy'], cb);
 });
 
 // Run PageSpeed Insights
