@@ -73,7 +73,7 @@ gulp.task('images', function () {
 // Copy all files at the root level (app)
 gulp.task('copy', function () {
   return gulp.src([
-    'src/**/**',
+    'src/*',
     'src/*.php',
     '!src/**/*.DS_Store',
     '!src/**/*.git',
