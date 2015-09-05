@@ -9,6 +9,7 @@ var runSequence = require('run-sequence');
 var browserSync = require('browser-sync');
 var pagespeed = require('psi');
 var reload = browserSync.reload;
+var config = require('./config.json');
 
 var uglifySrc = [
 		/** Modernizr */
