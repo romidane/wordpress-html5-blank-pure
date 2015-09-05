@@ -12,19 +12,21 @@ var reload = browserSync.reload;
 
 var uglifySrc = [
 		/** Modernizr */
-		"src/bower_components/modernizr/modernizr.js",
+		"src/assets/bower_components/modernizr/modernizr.js",
 		/** Conditionizr */
-		"src/bower_components/conditionizr/src/conditionizr.js",
+		"src/assets/bower_components/conditionizr/src/conditionizr.js",
 		/** jQuery */
-		"src/bower_components/jquery/dist/jquery.js",
+		"src/assets/bower_components/jquery/dist/jquery.js",
 		/** Page scripts */
-		"src/scripts/js/**/*.js"
+		"src/assets/scripts/js/**/*.js"
 ];
 
 var cssminSrc = [
-  "src/bower_components/pure/pure-min.css",
+  'src/assets/styles/*.scss',
+  "src/assets/bower_components/pure/pure-min.css",
+  'src/assets/styles/**/*.css',
+  'src/assets/styles/components/components.scss'
 ];
-
 
 
 var AUTOPREFIXER_BROWSERS = [
@@ -41,7 +43,7 @@ var AUTOPREFIXER_BROWSERS = [
 
 // Lint JavaScript
 gulp.task('jshint', function () {
-  return gulp.src(['src/scripts/**/*.js','src/scripts/{!(lib)/*.js,*.js}'])
+  return gulp.src(['src/assets/scripts/**/*.js','src/scripts/{!(lib)/*.js,*.js}'])
     .pipe(reload({stream: true, once: true}))
     .pipe($.jshint())
     .pipe($.jshint.reporter('jshint-stylish'))
@@ -54,26 +56,28 @@ gulp.task( "uglify", function() {
 	return gulp.src( uglifySrc )
 		.pipe( $.concat( "scripts.min.js" ) )
 		.pipe( $.uglify() )
-		.pipe( gulp.dest( "dist/scripts" ) );
+		.pipe( gulp.dest( "dist/assets/scripts" ) );
 });
 
 // Optimize images
 gulp.task('images', function () {
-  return gulp.src('src/images/**/*')
+  return gulp.src('src/assets/images/**/*')
     .pipe($.cache($.imagemin({
       progressive: true,
       interlaced: true
     })))
-    .pipe(gulp.dest('dist/images'))
+    .pipe(gulp.dest('dist/assets/images'))
     .pipe($.size({title: 'images'}));
 });
 
 // Copy all files at the root level (app)
 gulp.task('copy', function () {
   return gulp.src([
-    'src/*',
+    'src/**/**',
     'src/*.php',
-    '!scr/bower_components'], {
+    '!src/**/*.DS_Store',
+    '!src/**/*.git',
+    '!scr/assets/bower_components'], {
     dot: true
   }).pipe(gulp.dest('dist'))
     .pipe($.size({title: 'copy'}));
@@ -81,31 +85,27 @@ gulp.task('copy', function () {
 
 // Copy web fonts to dist
 gulp.task('fonts', function () {
-  return gulp.src(['src/fonts/**'])
-    .pipe(gulp.dest('dist/fonts'))
+  return gulp.src(['src/assets/fonts/**'])
+    .pipe(gulp.dest('dist/assets/fonts'))
     .pipe($.size({title: 'fonts'}));
 });
 
 // Compile and automatically prefix stylesheets
 gulp.task('styles', function () {
   // For best performance, don't add Sass partials to `gulp.src`
-  return gulp.src([
-    'src/styles/*.scss',
-    'src/styles/**/*.css',
-    'src/styles/components/components.scss'
-  ])
+  return gulp.src(cssminSrc)
     .pipe($.sourcemaps.init())
-    .pipe($.changed('.tmp/styles', {extension: '.css'}))
+    .pipe($.changed('.tmp/assets/tyles', {extension: '.css'}))
     .pipe($.sass({
       precision: 10,
       onError: console.error.bind(console, 'Sass error:')
     }))
     .pipe($.autoprefixer({browsers: AUTOPREFIXER_BROWSERS}))
     .pipe($.sourcemaps.write())
-    .pipe(gulp.dest('.tmp/styles'))
+    .pipe(gulp.dest('.tmp/assets/styles'))
     // Concatenate and minify styles
     .pipe($.if('*.css', $.csso()))
-    .pipe(gulp.dest('dist/styles'))
+    .pipe(gulp.dest('dist/assets/styles'))
     .pipe($.size({title: 'styles'}));
 });
 
@@ -126,9 +126,9 @@ gulp.task('serve', ['styles'], function () {
   });
 
   gulp.watch(['src/**/*.php'], reload);
-  gulp.watch(['src/styles/**/*.{scss,css}'], ['styles', reload]);
-  gulp.watch(['src/scripts/**/*.js'], ['jshint']);
-  gulp.watch(['src/images/**/*'], reload);
+  gulp.watch(['src/assets/styles/**/*.{scss,css}'], ['styles', reload]);
+  gulp.watch(['src/assets/scripts/**/*.js'], ['jshint']);
+  gulp.watch(['src/assets/images/**/*'], reload);
 });
 
 // Build and serve the output from the dist build
