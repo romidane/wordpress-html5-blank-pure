@@ -1,3 +1,4 @@
 {
+  "siteUrl": "localhost:7000",
   "enviroment": "development"
 }

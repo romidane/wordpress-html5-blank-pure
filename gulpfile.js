@@ -9,6 +9,7 @@ var runSequence = require('run-sequence');
 var browserSync = require('browser-sync');
 var pagespeed = require('psi');
 var reload = browserSync.reload;
+var bsConfig = require('./bs-config');
 var config = require('./config.json');
 
 var uglifySrc = [
@@ -77,7 +78,7 @@ gulp.task('copy', function () {
     'src/**',
     '!src/assets/**',
     '!src/**/*.DS_Store',
-    '!src/**/*.git'
+    '!src/.git/**'
     ], {
     dot: true
   }).pipe(gulp.dest('dist'))
@@ -96,7 +97,6 @@ gulp.task('styles', function () {
   // For best performance, don't add Sass partials to `gulp.src`
   return gulp.src(cssminSrc)
     .pipe($.sourcemaps.init())
-    .pipe($.changed('.tmp/assets/tyles', {extension: '.css'}))
     .pipe($.sass({
       precision: 10,
       onError: console.error.bind(console, 'Sass error:')
@@ -104,7 +104,6 @@ gulp.task('styles', function () {
     .pipe($.autoprefixer({browsers: AUTOPREFIXER_BROWSERS}))
     .pipe($.csscomb())
     .pipe($.sourcemaps.write())
-    .pipe(gulp.dest('.tmp/assets/styles'))
     .pipe( $.concat( "main.min.css" ) )
     // Minify styles
     .pipe($.if('*.css', $.csso()))
@@ -116,36 +115,14 @@ gulp.task('styles', function () {
 gulp.task('clean', del.bind(null, ['.tmp', 'dist/*', '!dist/.git'], {dot: true}));
 
 // Watch files for changes & reload
-gulp.task('serve', ['styles'], function () {
-  browserSync({
-    notify: false,
-    // Customize the BrowserSync console logging prefix
-    logPrefix: 'WSK',
-    // Run as an https by uncommenting 'https: true'
-    // Note: this uses an unsigned certificate which on first access
-    //       will present a certificate warning in the browser.
-    // https: true,
-    server: ['.tmp', 'src']
-  });
-
-  gulp.watch(['src/**/*.php'], reload);
+gulp.task('serve', ['default'], function () {
+	browserSync(bsConfig);
+  gulp.watch(['src/**/*.php'], ['copy', reload]);
   gulp.watch(['src/assets/styles/**/*.{scss,css}'], ['styles', reload]);
-  gulp.watch(['src/assets/scripts/**/*.js'], ['jshint']);
-  gulp.watch(['src/assets/images/**/*'], reload);
+  gulp.watch(['src/assets/scripts/**/*.js'], ['jshint', 'copy', reload]);
+  gulp.watch(['src/assets/images/**/*'], ['images', reload]);
 });
 
-// Build and serve the output from the dist build
-gulp.task('serve:dist', ['default'], function () {
-  browserSync({
-    notify: false,
-    logPrefix: 'WSK',
-    // Run as an https by uncommenting 'https: true'
-    // Note: this uses an unsigned certificate which on first access
-    //       will present a certificate warning in the browser.
-    // https: true,
-    server: 'dist'
-  });
-});
 
 // Build production files, the default task
 gulp.task('default', ['clean'], function (cb) {
@@ -155,7 +132,7 @@ gulp.task('default', ['clean'], function (cb) {
 // Run PageSpeed Insights
 gulp.task('pagespeed', function (cb) {
   // Update the below URL to the public URL of your site
-  pagespeed.output('example.com', {
+  pagespeed.output(config.siteUrl, {
     strategy: 'mobile',
     // By default we use the PageSpeed Insights free (no API key) tier.
     // Use a Google Developer API key if you have one: http://goo.gl/RkN0vE

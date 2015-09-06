@@ -11,7 +11,7 @@ It shares the same goal as the original project to enable fast development of wo
 * Go to the Wordpress' theme folder (`.../wp-content/themes`)
 * In CLI, run: `git clone https://github.com/romidane/wordpress-html5-blank-pure`
 * `cd html5blank` and then `npm install` and then `bower install` (you'll need gulp install as well)
-* `gulp watch` will enable `livereload` and development version
+* `gulp serve` will enable `browserSync` and development version
 * `gulp build` for distribute version with minified `js` and `css` files
 * NOTE: `src` and `dist` folders can live happily together inside the same folder (`Wordpress Pure Blank`) that in the `theme` folder. You'll have two different instances of the theme within `Appearance > Themes` panel inside the admin
 
