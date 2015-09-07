@@ -7,19 +7,13 @@
 /*==========  VARIABLES  ==========*/
 
   // Defining breakpoints
-  $medium: 620px !default;
-  $wide: 800px !default;
-  $huge: 1600px !default;
+  $small: 35.5em !default;
+  $medium: 48em !default;
+  $wide: 64em !default;
+  $huge: 80em !default;
   $mediumContainer: 688px !default;
   $wideContainer: 864px !default;
 
-  // Defining grid sizes
-  $mediumColCount: 3 !default;
-  $mediumColWidth: 30.3% !default;
-  $mediumGutterWidth: 4.5% !default;
-  $wideColCount: 4 !default;
-  $wideColWidth: 22.2% !default;
-  $wideGutterWidth: 3.7% !default;
 
   // Defining colors
   $colorBlue: #3372df !default;
@@ -75,8 +69,6 @@
   // Defining animation easings
   $animationEasing: cubic-bezier(0.455, 0.030, 0.515, 0.955) !default;
 
-  // Defining sidebar stuff
-  $sidebarWidth: 280px !default;
 
 
 /*==========  FUNCTIONS  ==========*/
@@ -90,7 +82,7 @@
 
   @mixin media-query($media-query) {
     @if $media-query == small {
-      @media only screen and (max-width: $medium - 1) { @content; }
+      @media only screen and (min-width: $small) { @content; }
     }
 
     @if $media-query == medium {
