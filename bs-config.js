@@ -34,14 +34,14 @@ module.exports = {
      |--------------------------------------------------------------------------
      | https://github.com/shakyShane/browser-sync/wiki/options#wiki-proxy
      */
-    // proxy: {
-    //   host: "your_local_hostname" // e.g., localhost.dev, wordpress.dev
-    // },
-    //
-    // ports: {
-    //   min: 3000, // If you already use port '3000', Change port number as you like.
-    //   max: 3001
-    // },
+    proxy: {
+      host: "your_local_hostname" // e.g., localhost.dev, wordpress.dev
+    },
+
+    ports: {
+      min: 3000, // If you already use port '3000', Change port number as you like.
+      max: 3001
+    },
 
     /*
      |--------------------------------------------------------------------------

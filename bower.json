@@ -2,13 +2,13 @@
   "name": "PUREHTML5BLANK",
   "version": "0.0.1",
   "author": "Steven Bapaga",
-  "devDependencies": {
+  "devDependencies": {},
+  "dependencies": {
     "jquery": "~1.11.1",
     "modernizr": "~2.8.3",
     "normalize.css": "~3.0.1"
-  },
-  "dependencies": {
     "conditionizr": "~4.5.0",
+    "owl.carousel": "~2.0.0-beta.3",
     "pure": "~0.6.0"
   }
 }

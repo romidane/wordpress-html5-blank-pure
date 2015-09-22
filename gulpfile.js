@@ -13,21 +13,25 @@ var bsConfig = require('./bs-config');
 var config = require('./config.json');
 
 var uglifySrc = [
-		/** Modernizr */
-		"src/assets/bower_components/modernizr/modernizr.js",
-		/** Conditionizr */
-		"src/assets/bower_components/conditionizr/src/conditionizr.js",
-		/** jQuery */
-		"src/assets/bower_components/jquery/dist/jquery.js",
-		/** Page scripts */
-		"src/assets/scripts/js/**/*.js"
+    /** Modernizr */
+    "src/assets/bower_components/modernizr/modernizr.js",
+    /** Conditionizr */
+    "src/assets/bower_components/conditionizr/src/conditionizr.js",
+    /** jQuery */
+    "src/assets/bower_components/jquery/dist/jquery.js",
+    /** owl.carousel  */
+    "src/assets/bower_components/owl.carousel/dist/owl.carousel.js",
+    /** Page scripts */
+    "src/assets/scripts/*.js"
 ];
 
 var cssminSrc = [
   'src/assets/bower_components/normalize.css/normalize.css',
   "src/assets/bower_components/pure/pure.css",
+  "src/assets/bower_components/pure/grids-responsive.css",
+  "src/assets/bower_components/owl.carousel/dist/assets/owl.carousel.css",
   'src/assets/styles/main.scss',
-  'src/assets/styles/**/*.css',
+  'src/assets/styles/**/*.css'
 ];
 
 
@@ -102,7 +106,6 @@ gulp.task('styles', function () {
       onError: console.error.bind(console, 'Sass error:')
     }))
     .pipe($.autoprefixer({browsers: AUTOPREFIXER_BROWSERS}))
-    .pipe($.csscomb())
     .pipe($.sourcemaps.write())
     .pipe( $.concat( "main.min.css" ) )
     // Minify styles
@@ -111,15 +114,31 @@ gulp.task('styles', function () {
     .pipe($.size({title: 'styles'}));
 });
 
+gulp.task('styles:dev', function () {
+  // For best performance, don't add Sass partials to `gulp.src`
+  return gulp.src(cssminSrc)
+    .pipe($.sourcemaps.init())
+    .pipe($.sass({
+      precision: 10,
+      onError: console.error.bind(console, 'Sass error:')
+    }))
+    .pipe($.autoprefixer({browsers: AUTOPREFIXER_BROWSERS}))
+    .pipe($.sourcemaps.write())
+    .pipe( $.concat( "main.min.css" ) )
+    // Minify styles
+    .pipe(gulp.dest('dist/assets/styles'))
+    .pipe($.size({title: 'styles'}));
+});
+
 // Clean output directory
-gulp.task('clean', del.bind(null, ['.tmp', 'dist/*', '!dist/.git'], {dot: true}));
+gulp.task('clean', del.bind(null, ['dist/*'], {dot: true}));
 
 // Watch files for changes & reload
 gulp.task('serve', ['default'], function () {
 	browserSync(bsConfig);
   gulp.watch(['src/**/*.php'], ['copy', reload]);
-  gulp.watch(['src/assets/styles/**/*.{scss,css}'], ['styles', reload]);
-  gulp.watch(['src/assets/scripts/**/*.js'], ['jshint', 'copy', reload]);
+  gulp.watch(['src/assets/styles/**/*.{scss,css}'], ['styles:dev', reload]);
+  gulp.watch(['src/assets/scripts/**/*.js'], ['jshint','copy', reload]);
   gulp.watch(['src/assets/images/**/*'], ['images', reload]);
 });
 
@@ -128,6 +147,7 @@ gulp.task('serve', ['default'], function () {
 gulp.task('default', ['clean'], function (cb) {
   runSequence('styles', ['jshint', 'uglify', 'styles', 'images', 'fonts', 'copy'], cb);
 });
+
 
 // Run PageSpeed Insights
 gulp.task('pagespeed', function (cb) {
