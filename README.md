@@ -1,3 +1,5 @@
+# Work In progress! Do not us for production
+
 # WordPress HTML5 Theme with Pure CSS
 
 This is a fork of [Todd Motto](http://toddmotto.com) [HTML5 Blank](http://html5blank.com) with a mix of Google's webkit starter.
