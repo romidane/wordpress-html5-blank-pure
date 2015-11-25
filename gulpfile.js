@@ -1,4 +1,3 @@
-
 'use strict';
 
 // Include Gulp & tools we'll use
@@ -26,9 +25,6 @@ var uglifySrc = [
 ];
 
 var cssminSrc = [
-  'src/assets/bower_components/normalize.css/normalize.css',
-  "src/assets/bower_components/pure/pure.css",
-  "src/assets/bower_components/pure/grids-responsive.css",
   "src/assets/bower_components/owl.carousel/dist/assets/owl.carousel.css",
   'src/assets/styles/main.scss',
   'src/assets/styles/**/*.css'
@@ -47,6 +43,13 @@ var AUTOPREFIXER_BROWSERS = [
   'bb >= 10'
 ];
 
+
+// clear cache
+gulp.task('clear', function (done) {
+  return $.cache.clearAll(done);
+});
+
+
 // Lint JavaScript
 gulp.task('jshint', function () {
   return gulp.src(['src/assets/scripts/**/*.js','src/scripts/{!(lib)/*.js,*.js}'])
@@ -55,7 +58,6 @@ gulp.task('jshint', function () {
     .pipe($.jshint.reporter('jshint-stylish'))
     .pipe($.if(!browserSync.active, $.jshint.reporter('fail')));
 });
-
 
 /** Uglify */
 gulp.task( "uglify", function() {
@@ -145,7 +147,7 @@ gulp.task('serve', ['default'], function () {
 
 // Build production files, the default task
 gulp.task('default', ['clean'], function (cb) {
-  runSequence('styles', ['jshint', 'uglify', 'styles', 'images', 'fonts', 'copy'], cb);
+  runSequence('styles', ['clear', 'jshint', 'uglify', 'styles', 'images', 'fonts', 'copy'], cb);
 });
 
 
